@@ -8,7 +8,8 @@ import findNearByJobs from "../actions/job/findNearByJobs";
 import NearbyJobs from "./NearbyJobs";
 
 const Home = () => {
-  const { lat, lng } = useGeoLocation();
+  // const { lat, lng } = useGeoLocation();
+  const [latLng, setLatLng] = useState({ lat: null, lng: null });
   const [title, setTitle] = useState("");
   const [page, setPage] = useState(0);
   const [jobs, setJobs] = useState([]);
@@ -16,19 +17,15 @@ const Home = () => {
   const [{ data }, { data: nearbyData }] = useQueries(
     [
       {
-        queryKey: ["nearbyjobs", { lat, lng, title, page }],
+        queryKey: ["nearbyjobs", { title, page }],
         queryFn: async () => {
-          if (lat && lng) {
-            return findNearByJobs(lat, lng, title, page, 0);
-          }
+          return findNearByJobs(latLng.lat, latLng.lng, title, page, 0);
         },
       },
       {
-        queryKey: ["nearbyjobs5km", { lat, lng, title }],
+        queryKey: ["nearbyjobs5km", title],
         queryFn: async () => {
-          if (lat && lng) {
-            return findNearByJobs(lat, lng, title, 0, 5);
-          }
+          return findNearByJobs(latLng.lat, latLng.lng, title, 0, 5);
         },
       },
     ],
@@ -51,11 +48,23 @@ const Home = () => {
     setJobs([...jobs, ...(data?.jobs ?? [])]);
   }, [data?.jobs]);
 
+  // useEffect(() => {
+  //   if (lat) {
+  //     setLatLng({ lat: lat, lng: lng });
+  //   }
+  // }, [lat]);
+
+  useEffect(() => {
+    if (data?.lat) {
+      setLatLng({ lat: data?.lat, lng: data?.lng });
+    }
+  }, [data?.lat]);
+
   return (
-    <Box sx={{ flexGrow: 1, height: "98vh" }}>
-      <Grid container spacing={2} sx={{ height: "98vh" }}>
+    <Box sx={{ flexGrow: 1, minHeight: "98vh" }}>
+      <Grid container spacing={2} sx={{ minHeight: "98vh" }}>
         <Grid item xs={12} md={4}>
-          <Paper sx={{ height: "96vh" }}>
+          <Paper sx={{ minHeight: "40vh" }}>
             <Search
               onSearch={onSearch}
               jobs={jobs}
@@ -65,10 +74,10 @@ const Home = () => {
           </Paper>
         </Grid>
         <Grid item xs={12} md={8}>
-          <Paper sx={{ height: "80vh", marginBottom: 1 }}>
+          <Paper sx={{ minHeight: "80vh", marginBottom: 1 }}>
             <Map
-              lat={lat}
-              lng={lng}
+              lat={latLng.lat}
+              lng={latLng.lng}
               jobs={jobs}
               nearbyJobs={nearbyData?.jobs}
             />
@@ -78,7 +87,7 @@ const Home = () => {
             container
             rowSpacing={1}
             columnSpacing={2}
-            sx={{ marginTop: 1, height: "15vh" }}
+            sx={{ marginTop: 1, minHeight: "15vh" }}
           >
             <NearbyJobs jobs={nearbyData?.jobs} />
           </Grid>

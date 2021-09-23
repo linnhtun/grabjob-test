@@ -7,7 +7,7 @@ const List = ({ jobs, width, Parent = Fragment }) => (
       <Parent key={key}>
         <Paper
           elevation={3}
-          sx={{ textAlign: "center", padding: 3, marginBottom: 1, width }}
+          sx={{ textAlign: "center", padding: 2, marginBottom: 1, width }}
         >
           {title}
         </Paper>

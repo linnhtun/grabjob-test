@@ -20,6 +20,6 @@ func SetupRouter(router *gin.Engine) {
 		},
 		MaxAge: 12 * time.Hour,
 	}))
-	router.GET("/", controllers.ShowIndexPage)
-	router.GET("/jobs/nearby", controllers.ShowNearByJobs)
+	router.GET("/api", controllers.ShowIndexPage)
+	router.GET("/api/jobs/nearby", controllers.ShowNearByJobs)
 }

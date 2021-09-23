@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	database "test/db"
 
 	"gorm.io/gorm/clause"
@@ -14,10 +15,10 @@ type Job struct {
 	Lng   string `json:"lng" gorm:"size:20"`
 }
 
-func (job *Job) FindNearByJobsWithTitle(title string, point string, radius int, page int, limit int) ([]Job, bool) {
+func (job *Job) FindNearByJobsWithTitle(title string, lat string, lng string, radius int, page int, limit int) ([]Job, bool) {
 	var jobs []Job
 	db := database.ConnectDB()
-	point = "POINT(" + point + ")"
+	point := fmt.Sprintf("POINT(%s %s)", lat, lng)
 	builder := db.Clauses(
 		clause.OrderBy{
 			Expression: clause.Expr{SQL: "ST_Distance_Sphere(loc, ST_GeomFromText(?, 4326))", Vars: []interface{}{point}},

@@ -4,11 +4,19 @@ export const GeoContext = createContext({});
 
 export const GeoLocationProvider = ({ children }) => {
   const [geo, setGeo] = useState({ lat: null, lng: null });
+  const [timer, setTimer] = useState();
 
   useEffect(() => {
+    setTimer(
+      setTimeout(() => {
+        setGeo({ lat: "", lng: "" });
+      }, 5000)
+    );
+
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude: lat, longitude: lng } }) => {
         setGeo({ lat, lng });
+        clearTimeout(timer);
       }
     );
   }, []);

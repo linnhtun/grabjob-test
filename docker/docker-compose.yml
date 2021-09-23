@@ -26,10 +26,22 @@ services:
       # Password for root access
       GIN_MODE: "debug"
       GO111MODULE: "on"
+      IPGEO_APIKEY: "ea1ab2d33c2748d1b304ab8ffc77cfec"
     volumes:
       - ../api:/app
     working_dir: /app
     command: ["sh", "run.sh"]
+
+  front:
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+    networks:
+      - api
+    volumes:
+      - ../front/.conf:/etc/nginx/conf.d/
+      - ../front/build:/usr/share/nginx/html
 
 networks:
   db:
