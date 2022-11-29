@@ -1,17 +1,31 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"log"
-	routes "test/routes"
+	"net/http"
+	"os"
+	"test/graph"
+	"test/graph/generated"
+
+	"github.com/99designs/gqlgen/graphql/handler"
+	"github.com/99designs/gqlgen/graphql/playground"
 )
 
+const defaultPort = "3000"
+
 func main() {
-	router := gin.Default()
-	routes.SetupRouter(router)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
 
 	SetupDatabase()
 
-	log.Print("Listening for requests in :3000")
-	router.Run(":3000")
+	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &graph.Resolver{}}))
+
+	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	http.Handle("/query", srv)
+
+	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

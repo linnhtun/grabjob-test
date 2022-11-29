@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     command: --max_allowed_packet=128M
     ports:
-      - 23306:3306
+      - 33306:3306
     networks:
       - db
     environment:
@@ -18,7 +18,7 @@ services:
     image: linnhtun/go-gin
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - 10001:3000
     networks:
       - db
       - api
@@ -33,15 +33,16 @@ services:
     command: ["sh", "run.sh"]
 
   front:
-    image: nginx:alpine
+    image: node:14-alpine
     restart: unless-stopped
     ports:
-      - 80:80
+      - 3001:3000
     networks:
       - api
     volumes:
-      - ../front/.conf:/etc/nginx/conf.d/
-      - ../front/build:/usr/share/nginx/html
+      - ../front:/app
+    working_dir: /app
+    command: ["npm", "start"]
 
 networks:
   db:

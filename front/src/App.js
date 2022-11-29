@@ -13,9 +13,7 @@ const queryClient = new QueryClient({
 const App = () => (
   <div className="App" style={{ padding: 10 }}>
     <QueryClientProvider client={queryClient}>
-      <GeoLocationProvider>
-        <Home />
-      </GeoLocationProvider>
+      <Home />
     </QueryClientProvider>
   </div>
 );

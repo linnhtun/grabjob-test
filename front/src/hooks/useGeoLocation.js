@@ -15,6 +15,7 @@ export const GeoLocationProvider = ({ children }) => {
 
     navigator.geolocation.getCurrentPosition(
       ({ coords: { latitude: lat, longitude: lng } }) => {
+        console.log(lat, lng)
         setGeo({ lat, lng });
         clearTimeout(timer);
       }

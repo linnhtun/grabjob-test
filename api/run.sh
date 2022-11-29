@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
 go install github.com/cespare/reflex@latest
 go install
-reflex -r "\.go$" -s -- sh -c "go mod tidy; go run ."
+go mod tidy; go run .
+# reflex -r "\.go$" -s -- sh -c "go mod tidy; go run ."
